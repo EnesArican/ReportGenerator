@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using ReportGenerator.Interfaces;
+using ReportGenerator.Services;
 using System;
 
 namespace ReportGenerator
@@ -20,6 +22,7 @@ namespace ReportGenerator
         {
             IServiceCollection services = new ServiceCollection();
             services.AddTransient<ConsoleApp>();
+            services.AddSingleton<IFileFinderService, FileFinderService>();
             return services;
         }
     }
