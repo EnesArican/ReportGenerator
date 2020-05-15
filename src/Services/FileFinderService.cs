@@ -13,15 +13,14 @@ namespace ReportGenerator.Services
         {
             string downloadsPath = KnownFolders.Downloads.DefaultPath;
             Console.WriteLine("Downloads folder path: " + downloadsPath);
-            Console.ReadLine();
 
             Console.WriteLine("looking for file");
             var directory = new DirectoryInfo(downloadsPath);
             var myFile = directory.GetFiles(FileSearchPattern).OrderByDescending(f => f.LastWriteTime).First();
             Console.WriteLine("file you are looking for: " + myFile);
-            Console.ReadLine();
 
-            return downloadsPath;
+
+            return myFile.FullName;
         }
     }
 }

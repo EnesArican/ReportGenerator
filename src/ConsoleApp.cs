@@ -7,16 +7,16 @@ namespace ReportGenerator
 {
     public class ConsoleApp
     {
-        private readonly IFileFinderService _fileFinder;
+        private readonly IFileReaderService _fileReader;
 
-        public ConsoleApp(IFileFinderService fileFinder) 
+        public ConsoleApp(IFileReaderService fileReader) 
         {
-            _fileFinder = fileFinder;
+            _fileReader = fileReader;
         }
 
         public void Run() 
         {
-            _fileFinder.FindFile();
+            _fileReader.GetPersonData();
             Console.WriteLine("Hello World");
         }
     }
