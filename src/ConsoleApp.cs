@@ -16,6 +16,7 @@ namespace ReportGenerator
 
         public void Run() 
         {
+
             _fileReader.GetPersonData();
             Console.WriteLine("Hello World");
         }
