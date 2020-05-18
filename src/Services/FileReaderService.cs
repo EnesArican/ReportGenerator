@@ -10,23 +10,34 @@ namespace ReportGenerator.Services
     public class FileReaderService : IFileReaderService
     {
         private readonly IFileFinderService _fileFinder;
+        private readonly string ClassName = "Fatih,,";
         public FileReaderService(IFileFinderService fileFinder) => _fileFinder = fileFinder; 
         public void GetPersonData()
         {
             var filePath = _fileFinder.FindFile();
 
-            var lines = File.ReadAllLines(filePath);
+            var lines = File.ReadAllLines(filePath).Where(l => !string.IsNullOrEmpty(l));
 
             DateTime date;
+            var dateFound = false;
+            var classFound = false;
             foreach (var line in lines) 
             {
-                if (line.Contains("Date:")) 
+                Console.WriteLine(line);
+                //if line does not contain 5 commas then set datefound to false and class found to false 
+
+                if (line.Contains("Date:"))
                 {
-                    var end = line.IndexOf(",") - 6;
-                    var dateString = line.Substring(6, end);
-                    date = DateTime.Parse(dateString);
-                    Console.WriteLine(dateString);
-                    Console.WriteLine(date);
+                    date = GetDate(line);
+                    dateFound = true;
+                }
+
+                if (dateFound && line.Contains(ClassName)) classFound = true;
+
+
+                if (dateFound && classFound) 
+                { 
+                    
                 }
 
 
@@ -36,8 +47,13 @@ namespace ReportGenerator.Services
         }
 
 
+        private DateTime GetDate(string line) 
+        {
+            var end = line.IndexOf(",") - 6;
+            var dateString = line.Substring(6, end);
+            return DateTime.Parse(dateString);
+        }
 
-        
 
     }
 }
