@@ -1,6 +1,7 @@
 ﻿using Microsoft.Office.Interop.Excel;
 using ReportGenerator.Interfaces;
 using System;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
@@ -11,39 +12,35 @@ namespace ReportGenerator.Services
     {
         private readonly IFileFinderService _fileFinder;
         private readonly string ClassName = "Fatih,,";
+        private readonly string HeaderRow = "Last Name,First Name,Attendance,Phone,Notes,";
         public FileReaderService(IFileFinderService fileFinder) => _fileFinder = fileFinder; 
         public void GetPersonData()
         {
             var filePath = _fileFinder.FindFile();
 
-            var lines = File.ReadAllLines(filePath).Where(l => !string.IsNullOrEmpty(l));
+            var lines = File.ReadAllLines(filePath).Where(l => !string.IsNullOrEmpty(l) && !l.Contains(HeaderRow)).ToList();
 
             DateTime date;
+            const string dateRow = "Date:";
             var dateFound = false;
             var classFound = false;
-            foreach (var line in lines) 
+
+            var dateIndexes = lines.Select((value, index) => new { value, index })
+                                   .Where(l => l.value.Contains(dateRow))
+                                   .Select(l => l.index).ToList();
+
+            foreach (var index in dateIndexes)
             {
-                Console.WriteLine(line);
-                //if line does not contain 5 commas then set datefound to false and class found to false 
-
-                if (line.Contains("Date:"))
-                {
-                    date = GetDate(line);
-                    dateFound = true;
-                }
-
-                if (dateFound && line.Contains(ClassName)) classFound = true;
+                if (dateIndexes.LastOrDefault().Equals(index)) continue;
 
 
-                if (dateFound && classFound) 
-                { 
-                    
-                }
-
-
+                var nextIndex = dateIndexes.FindIndex(d => d == index) + 1;
+                var nextDateIndex = dateIndexes[nextIndex];
+                Console.WriteLine($"{index}  {nextDateIndex}");
 
 
             }
+
         }
 
 
