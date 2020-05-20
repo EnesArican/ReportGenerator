@@ -5,8 +5,8 @@ using System.Text;
 
 namespace ReportGenerator.Interfaces
 {
-    public interface IFileFinderService
+    public interface IFileHandlerService
     {
-        string FindFile();
+        string FindCsvFile();
     }
 }
