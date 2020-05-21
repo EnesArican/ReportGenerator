@@ -24,6 +24,7 @@ namespace ReportGenerator
             services.AddTransient<ConsoleApp>();
             services.AddSingleton<IFileHandlerService, FileHandlerService>();
             services.AddSingleton<IDataReaderService, DataReaderService>();
+            services.AddSingleton<IDataWriterService, DataWriterService>();
             return services;
         }
     }

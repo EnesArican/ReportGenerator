@@ -1,14 +1,16 @@
-﻿using ReportGenerator.Interfaces;
+﻿using Excel = Microsoft.Office.Interop.Excel;
+using ReportGenerator.Interfaces;
 using Syroot.Windows.IO;
 using System;
 using System.IO;
 using System.Linq;
-
+using Microsoft.Office.Interop.Excel;
 
 namespace ReportGenerator.Services
 {
     public class FileHandlerService : IFileHandlerService
     {
+        private Excel.Application ExcelApp;
         
         public string FindCsvFile()
         {
@@ -22,18 +24,17 @@ namespace ReportGenerator.Services
             return myFile.FullName;
         }
 
-
-        public void OpenXLFile() 
+        public Excel.Workbook GetWorkbook() 
         {
-            //Application xlApp = new Application();
+            ExcelApp = new Excel.Application();
+            return ExcelApp.Workbooks.Add(Type.Missing);
+        }
 
-            //var xlWorkBook = xlApp.Workbooks.Add(Type.Missing);
-
-            //xlWorkBook.SaveAs(@"C:\Temp\test.xlsx"); ;
-            //xlWorkBook.Close();
-            //xlApp.Quit();
-
-
+        public void SaveAndCloseWorkbook(Workbook workbook)
+        {
+            workbook.SaveAs(@"C:\Temp\test.xlsx"); ;
+            workbook.Close();
+            ExcelApp.Quit();
         }
     }
 }
