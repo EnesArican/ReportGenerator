@@ -1,9 +1,9 @@
-﻿using Microsoft.Office.Interop.Excel;
-using ReportGenerator.Interfaces;
+﻿using ReportGenerator.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Microsoft.Office.Core;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace ReportGenerator
 {
@@ -29,13 +29,13 @@ namespace ReportGenerator
             var test = personTest.AttendanceRecord.Select(kvp => kvp.Key + ": " + kvp.Value.ToString());
             Console.WriteLine(string.Join(Environment.NewLine, test));
 
-            Application xlApp = new Application();
+            Excel.Application excel = new Excel.Application();
 
-            var xlWorkBook = xlApp.Workbooks.Add(Type.Missing);
+            var xlWorkBook = excel.Workbooks.Add(Type.Missing);
 
             xlWorkBook.SaveAs(@"C:\Temp\test.xlsx"); ;
             xlWorkBook.Close();
-            xlApp.Quit();
+            excel.Quit();
 
         }
     }

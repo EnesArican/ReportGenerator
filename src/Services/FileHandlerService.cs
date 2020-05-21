@@ -3,7 +3,7 @@ using Syroot.Windows.IO;
 using System;
 using System.IO;
 using System.Linq;
-using Microsoft.Office.Interop.Excel;
+
 
 namespace ReportGenerator.Services
 {
@@ -25,13 +25,13 @@ namespace ReportGenerator.Services
 
         public void OpenXLFile() 
         {
-            Application xlApp = new Application();
+            //Application xlApp = new Application();
 
-            var xlWorkBook = xlApp.Workbooks.Add(Type.Missing);
+            //var xlWorkBook = xlApp.Workbooks.Add(Type.Missing);
 
-            xlWorkBook.SaveAs(@"C:\Temp\test.xlsx"); ;
-            xlWorkBook.Close();
-            xlApp.Quit();
+            //xlWorkBook.SaveAs(@"C:\Temp\test.xlsx"); ;
+            //xlWorkBook.Close();
+            //xlApp.Quit();
 
 
         }
