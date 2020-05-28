@@ -50,14 +50,7 @@ namespace ReportGenerator.Services
                     sheet.Cells[y, 2] = personData.LastName;
                     sheet.Cells[y, 3] = personData.PhoneNumber;
 
-
                     CultureInfo.CurrentCulture = cultureInfoTR;
-
-                    //atEndCol = atStrtCol + dateGroup.Count();
-                    //var strtCell = sheet.Cells[1, atStrtCol];
-                    //var endCell = sheet.Cells[1, atEndCol];
-                    //var monthHeader = sheet.Range[strtCell,endCell];
-                    //monthHeader.Merge();
 
                     sheet.Cells[1, atStrtCol] = monthDateGroup.Select(d => d.ToString("MMMM")).First();
 
@@ -97,6 +90,12 @@ namespace ReportGenerator.Services
 
             Excel.Range dateRowRange = (Excel.Range)sheet.Rows[dateRow];
             dateRowRange.NumberFormat = "dd-MM-yyyy";
+
+            //atEndCol = atStrtCol + dateGroup.Count();
+            //var strtCell = sheet.Cells[1, atStrtCol];
+            //var endCell = sheet.Cells[1, atEndCol];
+            //var monthHeader = sheet.Range[strtCell,endCell];
+            //monthHeader.Merge();
         }
     }
 }
