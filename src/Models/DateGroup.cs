@@ -8,6 +8,8 @@ namespace ReportGenerator.Models
 
         public int Year { get; set; }
 
+
+        //Need these methods so that the object can be compared corretly inside linq statements
         public override bool Equals(object obj)
         {
             return Equals(obj as DateGroup);
