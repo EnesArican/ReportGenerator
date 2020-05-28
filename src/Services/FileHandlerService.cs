@@ -32,7 +32,7 @@ namespace ReportGenerator.Services
 
         public void SaveAndCloseWorkbook(Workbook workbook)
         {
-            workbook.SaveAs(@"C:\Temp\test.xlsx"); ;
+            workbook.SaveAs(@"C:\Temp\test.xlsx", Local: true); ;
             workbook.Close();
             ExcelApp.Quit();
         }

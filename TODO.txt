@@ -1,0 +1,4 @@
+- change format of mobile number column to number
+- Add formatting to fix appearance
+
+- ensure format of date cells is general or a fixed date format
