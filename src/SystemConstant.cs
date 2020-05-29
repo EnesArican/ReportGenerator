@@ -9,8 +9,14 @@ namespace ReportGenerator
     {
         public const string CsvFileSearchPattern = "daily_report_*.csv";
 
-        public const string ClassName = "Fatih,,";
-        public const string HeaderRow = "Last Name,First Name,Attendance,Phone,Notes,";
-        public const string dateRow = "Date:";
+        public const string CsvClassName = "Fatih,,";
+        public const string CsvHeaderRow = "Last Name,First Name,Attendance,Phone,Notes,";
+        public const string CsvDateRow = "Date:";
+
+
+        public const int DateRow = 2;
+        public const int HeaderRow = 3;
+
+        public const int AtStrtCol = 4;
     }
 }

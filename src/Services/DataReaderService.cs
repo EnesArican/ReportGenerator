@@ -19,10 +19,10 @@ namespace ReportGenerator.Services
             DateTime date;
             IList<PersonData> personDataList = new List<PersonData>();
             
-            var lines = File.ReadAllLines(filePath).Where(l => !string.IsNullOrEmpty(l) && !l.Contains(SystemConstant.HeaderRow)).ToList();
+            var lines = File.ReadAllLines(filePath).Where(l => !string.IsNullOrEmpty(l) && !l.Contains(SystemConstant.CsvHeaderRow)).ToList();
 
             var dateIndexes = lines.Select((value, index) => new { value, index })
-                                   .Where(l => l.value.Contains(SystemConstant.dateRow))
+                                   .Where(l => l.value.Contains(SystemConstant.CsvDateRow))
                                    .Select(l => l.index).ToList();
 
             foreach (var index in dateIndexes)
@@ -52,7 +52,7 @@ namespace ReportGenerator.Services
 
                 if (classFound) PersonDataList.AddRecord(date, lines[i]);
 
-                if (line.Contains(SystemConstant.ClassName)) classFound = true;
+                if (line.Contains(SystemConstant.CsvClassName)) classFound = true;
 
                 i++;
             }

@@ -1,17 +1,20 @@
-﻿using Excel = Microsoft.Office.Interop.Excel;
-using ReportGenerator.Interfaces;
-using ReportGenerator.Models;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using ReportGenerator.Enums;
+using ReportGenerator.Models;
+using SC = ReportGenerator.SystemConstant;
+using ReportGenerator.Interfaces;
+using System.Collections.Generic;
+using Excel = Microsoft.Office.Interop.Excel;
+
 using System.Globalization;
 
 namespace ReportGenerator.Services
 {
     public class DataWriterService : IDataWriterService
     {
+        private readonly IFormatterService _formatterService;
+
+        public DataWriterService(IFormatterService formatterService) => _formatterService = formatterService;
         public void WriteData(IList<PersonData> personDataList, Excel.Workbook workbook)
         {
             //var test = personDataList.SelectMany(p => p.AttendanceRecord.Select(a => new { name = p.FirstName, surname = p.LastName, date = a.Key, attedance = a.Value}));
@@ -35,15 +38,13 @@ namespace ReportGenerator.Services
             CultureInfo cultureInfoTR = new CultureInfo("tr-TR");
             CultureInfo cultureInfoGB = new CultureInfo("en-GB");
 
-            int y = 0, x = 0, sheetCount = 1;
-            int headerRow = 3, dateRow = 2, atStrtCol = 4, atEndCol;
-
+            int y = 0, sheetCount = 1;
             foreach (var monthDateGroup in dateGroupsPerMonth.OrderByDescending(d => new DateTime(d.Key.Year, d.Key.Month, 1)))
             {
                 sheet = (Excel.Worksheet)workbook.Sheets[sheetCount];
                 sheet.Activate();
 
-                y = headerRow + 1;
+                y = SC.HeaderRow + 1;
                 foreach (var personData in personDataList.OrderBy(p => p.FirstName))
                 {
                     sheet.Cells[y, 1] = personData.FirstName;
@@ -52,50 +53,39 @@ namespace ReportGenerator.Services
 
                     CultureInfo.CurrentCulture = cultureInfoTR;
 
-                    sheet.Cells[1, atStrtCol] = monthDateGroup.Select(d => d.ToString("MMMM")).First();
+                    sheet.Cells[1, SC.AtStrtCol] = monthDateGroup.Select(d => d.ToString("MMMM")).First();
 
-
-                    x = atStrtCol;
-                    foreach (var date in monthDateGroup.OrderBy(d => d.Day))
-                    {
-                        sheet.Cells[headerRow, x] = date.ToString("dddd");
-                        sheet.Cells[dateRow, x] = date;
-
-                        if (personData.AttendanceRecord.TryGetValue(date, out var value))
-                            sheet.Cells[y, x] = value.ToString();
-                        x++;
-                    }
+                    AddAttendanceAndDates(sheet, monthDateGroup, personData, y);
                     y++;
                     CultureInfo.CurrentCulture = cultureInfoGB;
                 }
                 sheetCount++;
                 workbook.Sheets.Add(After: sheet);
 
-                FormatWorksheet(sheet, headerRow, dateRow);
+                _formatterService.FormatWorksheet(sheet, monthDateGroup.Count());
 
             }
 
-            //remove last sheet
+            // last sheet is empty so remove it
+            sheet = (Excel.Worksheet)workbook.Sheets[sheetCount];
+            sheet.Delete();
+
 
         }
 
-        private void FormatWorksheet(Excel.Worksheet sheet, int headerRow, int dateRow) 
+
+        private void AddAttendanceAndDates(Excel.Worksheet sheet, IGrouping<DateGroup, DateTime> monthDateGroup, PersonData personData, int y)
         {
-            sheet.Cells[headerRow, 1] = "Adi";
-            sheet.Cells[headerRow, 2] = "Soyadi";
-            sheet.Cells[headerRow, 3] = "Telefon";
+            var x = SC.AtStrtCol;
+            foreach (var date in monthDateGroup.OrderBy(d => d.Day))
+            {
+                sheet.Cells[SC.HeaderRow, x] = date.ToString("dddd");
+                sheet.Cells[SC.DateRow, x] = date;
 
-            Excel.Range mobileColumn = (Excel.Range)sheet.Columns[3];
-            mobileColumn.NumberFormat = "#### ### #### ###";
-
-            Excel.Range dateRowRange = (Excel.Range)sheet.Rows[dateRow];
-            dateRowRange.NumberFormat = "dd-MM-yyyy";
-
-            //atEndCol = atStrtCol + dateGroup.Count();
-            //var strtCell = sheet.Cells[1, atStrtCol];
-            //var endCell = sheet.Cells[1, atEndCol];
-            //var monthHeader = sheet.Range[strtCell,endCell];
-            //monthHeader.Merge();
+                if (personData.AttendanceRecord.TryGetValue(date, out var value))
+                    sheet.Cells[y, x] = value.ToString();
+                x++;
+            }
         }
     }
 }
