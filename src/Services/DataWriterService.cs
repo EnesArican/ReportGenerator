@@ -62,9 +62,10 @@ namespace ReportGenerator.Services
             var y = SC.HeaderRow + 1;
             foreach (var personData in personDataList.OrderBy(p => p.FirstName))
             {
-                sheet.Cells[y, 1] = personData.FirstName;
-                sheet.Cells[y, 2] = personData.LastName;
-                sheet.Cells[y, 3] = personData.PhoneNumber;
+                sheet.Cells[y, 1] = y - 3;
+                sheet.Cells[y, 2] = personData.FirstName;
+                sheet.Cells[y, 3] = personData.LastName;
+                sheet.Cells[y, 4] = personData.PhoneNumber;
 
                 CultureInfo.CurrentCulture = cultureInfoTR;
 

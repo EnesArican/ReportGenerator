@@ -17,6 +17,8 @@ namespace ReportGenerator
         public const int DateRow = 2;
         public const int HeaderRow = 3;
 
-        public const int AtStrtCol = 4;
+        public const int MobileCol = 4;
+        public const int AtStrtCol = 5;
+
     }
 }

@@ -1,23 +1,24 @@
 ﻿using ReportGenerator.Interfaces;
 using SC = ReportGenerator.SystemConstant;
-using Excel = Microsoft.Office.Interop.Excel;
 using System.Drawing;
 using ReportGenerator.Enums;
+using Microsoft.Office.Interop.Excel;
 
 namespace ReportGenerator.Services
 {
     public class FormatterService : IFormatterService
     {
-        public void FormatWorksheet(Excel.Worksheet sheet, int AtColsCount)
+        public void FormatWorksheet(Worksheet sheet, int AtColsCount)
         {
-            sheet.Cells[SC.HeaderRow, 1] = "Adi";
-            sheet.Cells[SC.HeaderRow, 2] = "Soyadi";
-            sheet.Cells[SC.HeaderRow, 3] = "Telefon";
 
-            Excel.Range mobileColumn = (Excel.Range)sheet.Columns[3];
+            AddColumHeaders(sheet);
+
+            
+
+            Range mobileColumn = (Range)sheet.Columns[SC.MobileCol];
             mobileColumn.NumberFormat = "#### ### #### ###";
 
-            Excel.Range dateRowRange = (Excel.Range)sheet.Rows[SC.DateRow];
+            Range dateRowRange = (Range)sheet.Rows[SC.DateRow];
             dateRowRange.NumberFormat = "dd-MM-yyyy";
 
 
@@ -27,12 +28,35 @@ namespace ReportGenerator.Services
 
             MergeMonthHeader(sheet, atEndCol);
 
+            sheet.UsedRange.Cells.HorizontalAlignment = XlHAlign.xlHAlignCenter;
+            sheet.UsedRange.Cells.VerticalAlignment = XlVAlign.xlVAlignCenter;
 
-           
+
+
+            var titleRow = (Range)sheet.UsedRange.Rows[SC.DateRow];
+            titleRow.Interior.Color = Color.FromArgb(255, 242, 204);
+            titleRow.Font.Color = Color.FromArgb(0, 32, 96);
+
+            titleRow = (Range)sheet.UsedRange.Rows[SC.HeaderRow];
+            titleRow.Interior.Color = Color.FromArgb(255, 242, 204);
+            titleRow.Font.Color = Color.FromArgb(0, 32, 96);
+
         }
 
 
-        private void AddFormatConditions(Excel.Worksheet sheet, int atEndCol) 
+        private void AddColumHeaders(Worksheet sheet) 
+        {
+            sheet.Cells[1, 1] = "Yoklama Ayi";
+            sheet.Cells[2, 1] = "Yoklama Tarihleri";
+
+            sheet.Cells[SC.HeaderRow, 1] = "SN.";
+            sheet.Cells[SC.HeaderRow, 2] = "Adi";
+            sheet.Cells[SC.HeaderRow, 3] = "Soyadi";
+            sheet.Cells[SC.HeaderRow, 4] = "Telefon";
+        }
+
+
+        private void AddFormatConditions(Worksheet sheet, int atEndCol) 
         {
             var atStrtRow = SC.HeaderRow + 1;
             var atEndRow = sheet.UsedRange.Rows.Count;
@@ -59,13 +83,16 @@ namespace ReportGenerator.Services
             
         }
 
-        private Excel.FormatCondition AddFormatCondition(Excel.Range range, string text) => 
-            (Excel.FormatCondition)range.FormatConditions.Add(
-                Excel.XlFormatConditionType.xlCellValue, Excel.XlFormatConditionOperator.xlEqual, text
+        private FormatCondition AddFormatCondition(Range range, string text) => 
+            (FormatCondition)range.FormatConditions.Add(
+                XlFormatConditionType.xlCellValue, XlFormatConditionOperator.xlEqual, text
             );
 
-        private void MergeMonthHeader(Excel.Worksheet sheet, int atEndCol) 
+        private void MergeMonthHeader(Worksheet sheet, int atEndCol) 
         {
+
+
+
             var strtCell = sheet.Cells[1, SC.AtStrtCol];
             var endCell = sheet.Cells[1, atEndCol];
             var monthHeader = sheet.Range[strtCell, endCell];
