@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using ReportGenerator.Models;
-using SC = ReportGenerator.SystemConstant;
 using ReportGenerator.Interfaces;
 using System.Collections.Generic;
+using SC = ReportGenerator.SystemConstant;
 using Excel = Microsoft.Office.Interop.Excel;
 
 using System.Globalization;
@@ -19,15 +19,13 @@ namespace ReportGenerator.Services
         {
             //var test = personDataList.SelectMany(p => p.AttendanceRecord.Select(a => new { name = p.FirstName, surname = p.LastName, date = a.Key, attedance = a.Value}));
 
-            var dateGroupsPerMonth = personDataList.SelectMany(
-                p => p.AttendanceRecord.Keys).Distinct().GroupBy(
-                    g => new DateGroup { Year = g.Year, Month = g.Month });
+            var dateGroupsPerMonth = personDataList.SelectMany(p => p.AttendanceRecord.Keys).Distinct()
+                                                   .GroupBy(g => new DateGroup { Year = g.Year, Month = g.Month });
 
             GenerateWorkbook(workbook, dateGroupsPerMonth, personDataList);
 
             var sheet = (Excel.Worksheet)workbook.Sheets[1];
             sheet.Activate();
-
         }
 
 
@@ -35,35 +33,18 @@ namespace ReportGenerator.Services
         {
             var sheet = (Excel.Worksheet)workbook.ActiveSheet;
 
-            CultureInfo cultureInfoTR = new CultureInfo("tr-TR");
-            CultureInfo cultureInfoGB = new CultureInfo("en-GB");
-
-            int y = 0, sheetCount = 1;
+            var sheetCount = 1;
             foreach (var monthDateGroup in dateGroupsPerMonth.OrderByDescending(d => new DateTime(d.Key.Year, d.Key.Month, 1)))
             {
                 sheet = (Excel.Worksheet)workbook.Sheets[sheetCount];
                 sheet.Activate();
 
-                y = SC.HeaderRow + 1;
-                foreach (var personData in personDataList.OrderBy(p => p.FirstName))
-                {
-                    sheet.Cells[y, 1] = personData.FirstName;
-                    sheet.Cells[y, 2] = personData.LastName;
-                    sheet.Cells[y, 3] = personData.PhoneNumber;
+                GenerateWorksheet(sheet, personDataList, monthDateGroup);
 
-                    CultureInfo.CurrentCulture = cultureInfoTR;
-
-                    sheet.Cells[1, SC.AtStrtCol] = monthDateGroup.Select(d => d.ToString("MMMM")).First();
-
-                    AddAttendanceAndDates(sheet, monthDateGroup, personData, y);
-                    y++;
-                    CultureInfo.CurrentCulture = cultureInfoGB;
-                }
                 sheetCount++;
                 workbook.Sheets.Add(After: sheet);
 
                 _formatterService.FormatWorksheet(sheet, monthDateGroup.Count());
-
             }
 
             // last sheet is empty so remove it
@@ -73,6 +54,28 @@ namespace ReportGenerator.Services
 
         }
 
+        private void GenerateWorksheet(Excel.Worksheet sheet, IList<PersonData> personDataList, IGrouping<DateGroup, DateTime> monthDateGroup) 
+        {
+            CultureInfo cultureInfoTR = new CultureInfo("tr-TR");
+            CultureInfo cultureInfoGB = new CultureInfo("en-GB");
+
+            var y = SC.HeaderRow + 1;
+            foreach (var personData in personDataList.OrderBy(p => p.FirstName))
+            {
+                sheet.Cells[y, 1] = personData.FirstName;
+                sheet.Cells[y, 2] = personData.LastName;
+                sheet.Cells[y, 3] = personData.PhoneNumber;
+
+                CultureInfo.CurrentCulture = cultureInfoTR;
+
+                sheet.Cells[1, SC.AtStrtCol] = monthDateGroup.Select(d => d.ToString("MMMM")).First();
+
+                AddAttendanceAndDates(sheet, monthDateGroup, personData, y);
+                y++;
+                CultureInfo.CurrentCulture = cultureInfoGB;
+            }
+
+        }
 
         private void AddAttendanceAndDates(Excel.Worksheet sheet, IGrouping<DateGroup, DateTime> monthDateGroup, PersonData personData, int y)
         {
