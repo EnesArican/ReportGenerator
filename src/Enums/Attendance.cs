@@ -8,7 +8,7 @@ namespace ReportGenerator.Enums
     {
         VAR = 0,
         YOK = 1,
-        IZINLI = 2,
+        İZİNLİ = 2,
         HASTA = 3
     }
 }

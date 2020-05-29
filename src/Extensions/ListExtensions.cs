@@ -40,7 +40,7 @@ namespace ReportGenerator.Extensions
         {
             "P"  => Attendance.VAR,
             "A"  => Attendance.YOK,
-            "TU" => Attendance.IZINLI,
+            "TU" => Attendance.İZİNLİ,
             "M"  => Attendance.HASTA,
             _    => throw new ArgumentException("value is not a valid attendance type")
         };
