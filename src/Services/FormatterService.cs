@@ -3,6 +3,8 @@ using SC = ReportGenerator.SystemConstant;
 using System.Drawing;
 using ReportGenerator.Enums;
 using Microsoft.Office.Interop.Excel;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace ReportGenerator.Services
 {
@@ -13,8 +15,6 @@ namespace ReportGenerator.Services
 
             AddColumHeaders(sheet);
 
-            
-
             Range mobileColumn = (Range)sheet.Columns[SC.MobileCol];
             mobileColumn.NumberFormat = "#### ### #### ###";
 
@@ -24,7 +24,13 @@ namespace ReportGenerator.Services
 
             var atEndCol = SC.AtStrtCol + AtColsCount - 1;
 
-            AddFormatConditions(sheet, atEndCol);
+            var attendanceRange = GetAttendanceRange(sheet, atEndCol);
+
+            //FormatAttendanceRange();
+
+            AddBorders(attendanceRange.Borders);
+
+            AddFormatConditions(attendanceRange);
 
             MergeMonthHeader(sheet, atEndCol);
 
@@ -56,31 +62,45 @@ namespace ReportGenerator.Services
         }
 
 
-        private void AddFormatConditions(Worksheet sheet, int atEndCol) 
+
+        private void AddBorders(Borders borders) 
+        {
+            borders.Color = Color.FromArgb(128, 96, 0);
+            borders.LineStyle = XlLineStyle.xlContinuous;
+            borders.Weight = XlBorderWeight.xlThin;
+
+            //borders[XlBordersIndex.xlEdgeLeft].Weight = XlBorderWeight.xlThick;
+            //borders[XlBordersIndex.xlEdgeRight].Weight = XlBorderWeight.xlThick;
+            borders[XlBordersIndex.xlInsideVertical].Weight = XlBorderWeight.xlMedium;
+        }
+
+        private Range GetAttendanceRange(Worksheet sheet, int atEndCol) 
         {
             var atStrtRow = SC.HeaderRow + 1;
             var atEndRow = sheet.UsedRange.Rows.Count;
             var strtCell = sheet.Cells[atStrtRow, SC.AtStrtCol];
             var endCell = sheet.Cells[atEndRow, atEndCol];
-            var AttendanceRange = sheet.Range[strtCell, endCell];
+            return sheet.Range[strtCell, endCell];
+        }
 
-            var formatCond = AddFormatCondition(AttendanceRange, Attendance.VAR.ToString());
+
+        private void AddFormatConditions(Range attendanceRange) 
+        {
+            var formatCond = AddFormatCondition(attendanceRange, Attendance.VAR.ToString());
             formatCond.Interior.Color = Color.FromArgb(198, 239, 206);
             formatCond.Font.Color = Color.FromArgb(0, 97, 0);
 
-            formatCond = AddFormatCondition(AttendanceRange, Attendance.YOK.ToString());
+            formatCond = AddFormatCondition(attendanceRange, Attendance.YOK.ToString());
             formatCond.Interior.Color = Color.FromArgb(255, 199, 206);
             formatCond.Font.Color = Color.FromArgb(156, 0, 6);
 
-            formatCond = AddFormatCondition(AttendanceRange, Attendance.İZİNLİ.ToString());
+            formatCond = AddFormatCondition(attendanceRange, Attendance.İZİNLİ.ToString());
             formatCond.Interior.Color = Color.FromArgb(255, 235, 156);
             formatCond.Font.Color = Color.FromArgb(156, 101, 0);
 
-            formatCond = AddFormatCondition(AttendanceRange, Attendance.HASTA.ToString());
+            formatCond = AddFormatCondition(attendanceRange, Attendance.HASTA.ToString());
             formatCond.Interior.Color = Color.FromArgb(230, 184, 183);
             formatCond.Font.Color = Color.FromArgb(0, 32, 96);
-
-            
         }
 
         private FormatCondition AddFormatCondition(Range range, string text) => 
@@ -90,9 +110,6 @@ namespace ReportGenerator.Services
 
         private void MergeMonthHeader(Worksheet sheet, int atEndCol) 
         {
-
-
-
             var strtCell = sheet.Cells[1, SC.AtStrtCol];
             var endCell = sheet.Cells[1, atEndCol];
             var monthHeader = sheet.Range[strtCell, endCell];
