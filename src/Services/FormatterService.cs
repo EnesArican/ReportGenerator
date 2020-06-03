@@ -1,10 +1,9 @@
-﻿using ReportGenerator.Interfaces;
-using SC = ReportGenerator.SystemConstant;
-using System.Drawing;
+﻿using System.Drawing;
 using ReportGenerator.Enums;
+using ReportGenerator.Interfaces;
 using Microsoft.Office.Interop.Excel;
-using System.Linq;
-using System.Collections.Generic;
+using C = ReportGenerator.Constants.ColourScheme;
+using SC = ReportGenerator.Constants.SystemConstant;
 
 namespace ReportGenerator.Services
 {
@@ -29,24 +28,32 @@ namespace ReportGenerator.Services
             //FormatAttendanceRange();
 
             AddBorders(attendanceRange.Borders);
-
+            attendanceRange.Borders[XlBordersIndex.xlInsideVertical].Weight = XlBorderWeight.xlMedium;
             AddFormatConditions(attendanceRange);
 
             MergeMonthHeader(sheet, atEndCol);
+
+            var allHeaders = GetAllHeadersRange(sheet, atEndCol);
+            AddBorders(allHeaders.Borders);
+
+            var headerColsRange = GetHeaderColsRange(sheet);
+            AddBorders(headerColsRange.Borders);
 
             sheet.UsedRange.Cells.HorizontalAlignment = XlHAlign.xlHAlignCenter;
             sheet.UsedRange.Cells.VerticalAlignment = XlVAlign.xlVAlignCenter;
 
 
+            var numbersRange = GetNumbersRange(sheet);
+            FormatRange(numbersRange, C.Cream, C.Red, 10);
 
-            var titleRow = (Range)sheet.UsedRange.Rows[SC.DateRow];
-            titleRow.Interior.Color = Color.FromArgb(255, 242, 204);
-            titleRow.Font.Color = Color.FromArgb(0, 32, 96);
+            var titleRow = (Range)sheet.UsedRange.Rows[1];
+            FormatRange(titleRow, C.Cream, C.Red, 13, true);
 
-            titleRow = (Range)sheet.UsedRange.Rows[SC.HeaderRow];
-            titleRow.Interior.Color = Color.FromArgb(255, 242, 204);
-            titleRow.Font.Color = Color.FromArgb(0, 32, 96);
-
+            var dateRow = (Range)sheet.UsedRange.Rows[SC.DateRow];
+            FormatRange(dateRow, C.Cream, C.Navy, 9, true);
+          
+            var headerRow = (Range)sheet.UsedRange.Rows[SC.HeaderRow];
+            FormatRange(headerRow, C.Cream, C.Navy, 9, true);        
         }
 
 
@@ -65,13 +72,21 @@ namespace ReportGenerator.Services
 
         private void AddBorders(Borders borders) 
         {
-            borders.Color = Color.FromArgb(128, 96, 0);
+            borders.Color = C.Brown;
             borders.LineStyle = XlLineStyle.xlContinuous;
             borders.Weight = XlBorderWeight.xlThin;
 
             //borders[XlBordersIndex.xlEdgeLeft].Weight = XlBorderWeight.xlThick;
             //borders[XlBordersIndex.xlEdgeRight].Weight = XlBorderWeight.xlThick;
-            borders[XlBordersIndex.xlInsideVertical].Weight = XlBorderWeight.xlMedium;
+        }
+
+
+        private void FormatRange(Range range, Color interiorColour, Color fontColour, int fontSize, bool isBold = false) 
+        {
+            range.Interior.Color = interiorColour;
+            range.Font.Color = fontColour;
+            range.Font.Bold = isBold;
+            range.Font.Size = fontSize;
         }
 
         private Range GetAttendanceRange(Worksheet sheet, int atEndCol) 
@@ -82,6 +97,35 @@ namespace ReportGenerator.Services
             var endCell = sheet.Cells[atEndRow, atEndCol];
             return sheet.Range[strtCell, endCell];
         }
+
+
+        private Range GetNumbersRange(Worksheet sheet)
+        {
+            var atEndRow = sheet.UsedRange.Rows.Count;
+            var strtCell = sheet.Cells[SC.HeaderRow+1, 1];
+            var endCell = sheet.Cells[atEndRow, 1];
+            return sheet.Range[strtCell, endCell];
+        }
+
+        private Range GetAllHeadersRange(Worksheet sheet, int atEndCol)
+        {
+            var strtCell = sheet.Cells[1, 1];
+            var endCell = sheet.Cells[SC.HeaderRow, atEndCol];
+            return sheet.Range[strtCell, endCell];
+        }
+
+        private Range GetHeaderColsRange(Worksheet sheet)
+        {
+            var atEndRow = sheet.UsedRange.Rows.Count;
+            var strtCell = sheet.Cells[SC.HeaderRow + 1, 1];
+            var endCell = sheet.Cells[atEndRow, SC.MobileCol];
+            return sheet.Range[strtCell, endCell];
+        }
+
+
+
+
+
 
 
         private void AddFormatConditions(Range attendanceRange) 
@@ -114,6 +158,17 @@ namespace ReportGenerator.Services
             var endCell = sheet.Cells[1, atEndCol];
             var monthHeader = sheet.Range[strtCell, endCell];
             monthHeader.Merge();
+
+            strtCell = sheet.Cells[1, 1];
+            endCell = sheet.Cells[1, SC.AtStrtCol - 1];
+            var monthTitle = sheet.Range[strtCell, endCell];
+            monthTitle.Merge();
+
+            strtCell = sheet.Cells[2, 1];
+            endCell = sheet.Cells[2, SC.AtStrtCol - 1];
+            var datesTitle = sheet.Range[strtCell, endCell];
+            datesTitle.Merge();
+
         }
 
     }

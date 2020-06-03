@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Microsoft.Office.Interop.Excel;
+using SC = ReportGenerator.Constants.SystemConstant;
 
 namespace ReportGenerator.Services
 {
@@ -18,7 +19,7 @@ namespace ReportGenerator.Services
             Console.WriteLine("Downloads folder path: " + downloadsPath);
 
             var directory = new DirectoryInfo(downloadsPath);
-            var myFile = directory.GetFiles(SystemConstant.CsvFileSearchPattern).OrderByDescending(f => f.LastWriteTime).First();
+            var myFile = directory.GetFiles(SC.CsvFileSearchPattern).OrderByDescending(f => f.LastWriteTime).First();
             Console.WriteLine("file you are looking for: " + myFile);
 
             return myFile.FullName;

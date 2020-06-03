@@ -3,7 +3,7 @@ using System.Linq;
 using ReportGenerator.Models;
 using ReportGenerator.Interfaces;
 using System.Collections.Generic;
-using SC = ReportGenerator.SystemConstant;
+using SC = ReportGenerator.Constants.SystemConstant;
 using Excel = Microsoft.Office.Interop.Excel;
 
 using System.Globalization;

@@ -7,6 +7,7 @@ using ReportGenerator.Extensions;
 using ReportGenerator.Interfaces;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using SC = ReportGenerator.Constants.SystemConstant;
 
 namespace ReportGenerator.Services
 {
@@ -19,10 +20,10 @@ namespace ReportGenerator.Services
             DateTime date;
             IList<PersonData> personDataList = new List<PersonData>();
             
-            var lines = File.ReadAllLines(filePath).Where(l => !string.IsNullOrEmpty(l) && !l.Contains(SystemConstant.CsvHeaderRow)).ToList();
+            var lines = File.ReadAllLines(filePath).Where(l => !string.IsNullOrEmpty(l) && !l.Contains(SC.CsvHeaderRow)).ToList();
 
             var dateIndexes = lines.Select((value, index) => new { value, index })
-                                   .Where(l => l.value.Contains(SystemConstant.CsvDateRow))
+                                   .Where(l => l.value.Contains(SC.CsvDateRow))
                                    .Select(l => l.index).ToList();
 
             foreach (var index in dateIndexes)
@@ -52,7 +53,7 @@ namespace ReportGenerator.Services
 
                 if (classFound) PersonDataList.AddRecord(date, lines[i]);
 
-                if (line.Contains(SystemConstant.CsvClassName)) classFound = true;
+                if (line.Contains(SC.CsvClassName)) classFound = true;
 
                 i++;
             }
