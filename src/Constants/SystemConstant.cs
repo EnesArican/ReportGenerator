@@ -16,7 +16,9 @@ namespace ReportGenerator.Constants
 
         public const int DateRow = 2;
         public const int HeaderRow = 3;
+        public const int DataStrtRow = 4;
 
+        public const int FirstNameCol = 2;
         public const int MobileCol = 4;
         public const int AtStrtCol = 5;
 

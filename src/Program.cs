@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using ReportGenerator.Interfaces;
 using ReportGenerator.Services;
-using System;
 
 namespace ReportGenerator
 {
@@ -26,6 +25,7 @@ namespace ReportGenerator
             services.AddSingleton<IDataReaderService, DataReaderService>();
             services.AddSingleton<IDataWriterService, DataWriterService>();
             services.AddSingleton<IFormatterService, FormatterService>();
+            services.AddSingleton<IRangeEditorService, RangeEditorService>();
             return services;
         }
     }

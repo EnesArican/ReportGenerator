@@ -13,8 +13,9 @@ namespace ReportGenerator.Constants
 
         public static readonly Color Red = Color.FromArgb(192, 0, 0);
 
-
         public static readonly Color Brown = Color.FromArgb(128, 96, 0);
+
+        public static readonly Color LightGrey = Color.FromArgb(242, 242, 242);
 
     }
 }
