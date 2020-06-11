@@ -114,7 +114,7 @@ namespace ReportGenerator.Services
             }
             sheet.Cells[y, totalsStrtCol] = daysCount;
             sheet.Cells[y, totalsStrtCol + 1] = presentTotal;
-            sheet.Cells[y, totalsStrtCol + 2] = $"{presentTotal * 100.0 / daysCount:0.0}%";
+            sheet.Cells[y, totalsStrtCol + 2] = (double) presentTotal/ daysCount;
         }
     }
 }

@@ -64,6 +64,9 @@ namespace ReportGenerator.Services
 
             Range dateRowRange = (Range)sheet.Rows[SC.DateRow];
             dateRowRange.NumberFormat = "dd-MM-yyyy";
+
+            Range AtPercentCol = (Range)sheet.Columns[sheet.UsedRange.Columns.Count];
+            AtPercentCol.NumberFormat = "0%";
         }
 
         private void MergeMonthHeader(Worksheet sheet, int atEndCol) 
