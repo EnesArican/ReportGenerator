@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Globalization;
+using ReportGenerator.Enums;
 using ReportGenerator.Models;
 using ReportGenerator.Interfaces;
 using System.Collections.Generic;
-using SC = ReportGenerator.Constants.SystemConstant;
-
-using System.Globalization;
-using ReportGenerator.Enums;
 using Microsoft.Office.Interop.Excel;
+using SC = ReportGenerator.Constants.SystemConstant;
 
 namespace ReportGenerator.Services
 {

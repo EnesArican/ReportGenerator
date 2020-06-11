@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-using ReportGenerator.Enums;
-using ReportGenerator.Interfaces;
+﻿using ReportGenerator.Interfaces;
 using Microsoft.Office.Interop.Excel;
 using C = ReportGenerator.Constants.ColourScheme;
 using SC = ReportGenerator.Constants.SystemConstant;
